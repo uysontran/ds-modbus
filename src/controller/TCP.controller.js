@@ -1,7 +1,8 @@
 const Modbus = require("jsmodbus");
 const net = require("net");
-
-async function tcp(req, res) {
+const PQueue = require("p-queue");
+const queue = new PQueue({ concurrency: 1 });
+function tcp(req, res) {
   const { host, port, id, fc, addr, quantity, value } = req.body;
   return new Promise((resovle, reject) => {
     const socket = new net.Socket();
@@ -33,7 +34,7 @@ async function tcp(req, res) {
 class TCP {
   async tcp(req, res) {
     try {
-      let result = await tcp(req, res);
+      let result = await queue.add(() => tcp(req, res));
       return res.json(result.response._body._values);
     } catch (err) {
       return res.sendStatus(404);

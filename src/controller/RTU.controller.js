@@ -1,6 +1,8 @@
-const SerialPort = require("serialport").SerialPort;
+const PQueue = require("p-queue");
+const queue = new PQueue({ concurrency: 1 });
+const { SerialPort } = require("serialport");
 const Modbus = require("jsmodbus");
-async function rtu(req, res) {
+function rtu(req, res) {
   const {
     host,
     id,
@@ -46,19 +48,19 @@ async function rtu(req, res) {
     });
   });
 }
-
 class RTU {
   async rtu(req, res) {
     const { path } = req.body;
     try {
-      let result = await rtu(req, res);
+      let result = await queue.add(() => rtu(req, res));
       return res.send(result.response._body);
     } catch (err) {
       if (err.message === `Opening ${path}: Access denied`) {
         return res.sendStatus(503);
+      } else {
+        console.log(err);
+        return res.sendStatus(404);
       }
-      console.log(err);
-      res.sendStatus(404);
     }
   }
 }
