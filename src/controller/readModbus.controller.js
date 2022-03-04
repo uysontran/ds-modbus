@@ -4,7 +4,7 @@ const { SerialPort } = require("serialport");
 const Modbus = require("jsmodbus");
 const { Buffer } = require("buffer");
 const net = require("net");
-const debug = require("../utils/debug");
+const debug = require("../utils/debug")("readModbus");
 module.exports = async function (req, res) {
   const {
     parse,
@@ -81,15 +81,14 @@ module.exports = async function (req, res) {
         })
     );
     let buf = Buffer.from(result.response._body._valuesAsBuffer);
-    if (parse === "key/value") {
-      return res.send({
-        [channel_name]:
-          JSON.parse(parser)[result.response._body._values] ||
-          result.response._body._values,
-      });
-    } else {
-      return res.send({ [channel_name]: buf[`read${parse}`](0) });
-    }
+    let { offset = 0, byteLength = 8, map = {} } = JSON.parse(parser);
+    console.log("hehe");
+    console.log(buf[`read${parse}`](offset, byteLength));
+    return res.send({
+      [channel_name]:
+        map[buf[`read${parse}`](offset, byteLength)] ||
+        buf[`read${parse}`](offset, byteLength),
+    });
   } catch (err) {
     debug(err.message);
     if (err.message === `Opening ${host}: Access denied`) {
