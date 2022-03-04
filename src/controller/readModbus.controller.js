@@ -98,11 +98,17 @@ module.exports = async function (req, res) {
     return res.send(result);
   } catch (err) {
     debug(err.message);
-    if (err.message === `Opening ${host}: Access denied`) {
-      return res.sendStatus(503);
-    } else {
-      debug(err);
-      return res.sendStatus(404);
+    switch (err.message) {
+      case `Opening ${host}: Access denied`:
+        return res.sendStatus(503);
+        break;
+      case "Req timed out":
+        return res.sendStatus(408);
+        break;
+      case `Opening ${host}: File not found`:
+        return res.sendStatus(404);
+      default:
+        return res.sendStatus(400);
     }
   }
 };
