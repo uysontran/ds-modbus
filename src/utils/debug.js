@@ -1,5 +1,5 @@
 const DEBUG = require("debug");
-const debug = DEBUG("core");
+const debug = DEBUG("ds-modbus");
 debug.log = console.log.bind(console);
 DEBUG.enable("core:*");
 module.exports = function (type) {

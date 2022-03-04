@@ -4,6 +4,7 @@ const { SerialPort } = require("serialport");
 const Modbus = require("jsmodbus");
 const { Buffer } = require("buffer");
 const net = require("net");
+const debug = require("../utils/debug");
 module.exports = async function (req, res) {
   const {
     parse,
@@ -50,7 +51,6 @@ module.exports = async function (req, res) {
             () => {
               switch (fc) {
                 case "03":
-                  console.log("hhee");
                   client
                     .readHoldingRegisters(addr, quantity)
                     .then((result) => {
@@ -71,7 +71,7 @@ module.exports = async function (req, res) {
                     });
                   break;
                 default:
-                  console.log("function code not supported");
+                  reject("function code not supported");
               }
             }
           );
@@ -91,11 +91,11 @@ module.exports = async function (req, res) {
       return res.send({ [channel_name]: buf[`read${parse}`](0) });
     }
   } catch (err) {
-    console.log(err.message);
+    debug(err.message);
     if (err.message === `Opening ${host}: Access denied`) {
       return res.sendStatus(503);
     } else {
-      console.log(err);
+      debug(err);
       return res.sendStatus(404);
     }
   }
