@@ -1,7 +1,5 @@
-const rtu = require("./rtu.route");
-const tcp = require("./tcp.route");
+const readModbus = require("../controller/readModbus.controller");
 function router(app) {
-  app.use("/rtu", rtu);
-  app.use("/tcp", tcp);
+  app.use("/:protocol", readModbus);
 }
 module.exports = router;
