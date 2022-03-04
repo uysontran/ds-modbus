@@ -21,6 +21,7 @@ module.exports = async function (req, res) {
     stopBits,
     dataBits,
     port,
+    gain = 1,
   } = req.body;
   try {
     let result = await queue.add(
@@ -59,7 +60,20 @@ module.exports = async function (req, res) {
                       } else {
                         socket.destroy();
                       }
-                      resolve(result);
+                      let buf = Buffer.from(
+                        result.response._body._valuesAsBuffer
+                      );
+                      let {
+                        offset = 0,
+                        byteLength = 8,
+                        map = {},
+                      } = JSON.parse(parser);
+
+                      resolve({
+                        [channel_name]:
+                          map[buf[`read${parse}`](offset, byteLength) * gain] ||
+                          buf[`read${parse}`](offset, byteLength) * gain,
+                      });
                     })
                     .catch((err) => {
                       if (req.params.protocol === "RTU") {
@@ -80,15 +94,8 @@ module.exports = async function (req, res) {
           });
         })
     );
-    let buf = Buffer.from(result.response._body._valuesAsBuffer);
-    let { offset = 0, byteLength = 8, map = {} } = JSON.parse(parser);
-    console.log("hehe");
-    console.log(buf[`read${parse}`](offset, byteLength));
-    return res.send({
-      [channel_name]:
-        map[buf[`read${parse}`](offset, byteLength)] ||
-        buf[`read${parse}`](offset, byteLength),
-    });
+
+    return res.send(result);
   } catch (err) {
     debug(err.message);
     if (err.message === `Opening ${host}: Access denied`) {
