@@ -13,7 +13,7 @@ app.get("/serialport", async (req, res) => {
 app.use("/status", (req, res) => {
   return res.sendStatus(200);
 });
-app.use("/*", (req, res) => req.sendStatus(500));
+app.use("/*", (req, res) => res.sendStatus(500));
 app.listen(port, () => {
   debug(`ds-modbus is running on ${port}`);
 });

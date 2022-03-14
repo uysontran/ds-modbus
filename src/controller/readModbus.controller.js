@@ -7,6 +7,7 @@ const net = require("net");
 const debug = require("../utils/debug")("readModbus");
 module.exports = async function (req, res) {
   const {
+    path,
     parse,
     parser,
     channel_name,
@@ -30,7 +31,7 @@ module.exports = async function (req, res) {
           const socket = (() => {
             if (req.params.protocol === "RTU") {
               return new SerialPort({
-                path: host,
+                path,
                 baudRate: parseInt(baudRate),
                 parity,
                 stopBits,
@@ -97,7 +98,7 @@ module.exports = async function (req, res) {
 
     return res.send(result);
   } catch (err) {
-    debug(err.message);
+    debug(err);
     switch (err.message) {
       case `Opening ${host}: Access denied`:
         return res.sendStatus(503);
