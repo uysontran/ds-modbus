@@ -12,7 +12,7 @@ module.exports = async function (req, res) {
     parser,
     channel_name,
     host,
-    id,
+    unitId,
     fc,
     addr,
     quantity,
@@ -45,7 +45,7 @@ module.exports = async function (req, res) {
           })();
           const client = new Modbus.client[req.params.protocol](
             socket,
-            parseInt(id)
+            parseInt(unitId)
           );
 
           socket.on(
