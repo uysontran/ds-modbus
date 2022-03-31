@@ -14,6 +14,6 @@ const app = require("express")();
   });
   app.use("/*", (req, res) => res.sendStatus(500));
   app.listen(process.env.PORT || 33336, () => {
-    debug(`ds-modbus is running on ${process.env.PORT || 33336}`);
+    debug(`ds-modbus is running on ${process.env.PORT || 33334}`);
   });
 })();
