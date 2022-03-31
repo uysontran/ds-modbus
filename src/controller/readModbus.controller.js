@@ -54,7 +54,7 @@ module.exports = async function (req, res) {
               switch (fc) {
                 case "03":
                   client
-                    .readHoldingRegisters(addr, quantity)
+                    .readHoldingRegisters(addr, quantity * 2)
                     .then((result) => {
                       if (req.params.protocol === "RTU") {
                         socket.close();
