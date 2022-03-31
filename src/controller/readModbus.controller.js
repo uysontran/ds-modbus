@@ -22,7 +22,7 @@ module.exports = async function (req, res) {
     stopBits,
     dataBits,
     port,
-    gain = 1,
+    scale = 1,
   } = req.body;
   try {
     let result = await queue.add(
@@ -72,8 +72,9 @@ module.exports = async function (req, res) {
 
                       resolve({
                         [channel_name]:
-                          map[buf[`read${parse}`](offset, byteLength) * gain] ||
-                          buf[`read${parse}`](offset, byteLength) * gain,
+                          map[
+                            buf[`read${parse}`](offset, byteLength) * scale
+                          ] || buf[`read${parse}`](offset, byteLength) * scale,
                       });
                     })
                     .catch((err) => {
@@ -98,15 +99,13 @@ module.exports = async function (req, res) {
 
     return res.send(result);
   } catch (err) {
-    debug(err);
+    debug(err.message);
     switch (err.message) {
-      case `Opening ${host}: Access denied`:
+      case `Opening ${path}: Access denied`:
         return res.sendStatus(503);
-        break;
       case "Req timed out":
         return res.sendStatus(408);
-        break;
-      case `Opening ${host}: File not found`:
+      case `Opening ${path}: File not found`:
         return res.sendStatus(404);
       default:
         return res.sendStatus(400);
