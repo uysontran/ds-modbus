@@ -68,11 +68,12 @@ module.exports = async function (req, res) {
                       let { offset = 0, byteLength = 8 } = JSON.parse(parser);
 
                       resolve({
-                        [channel_name]: precision
-                          ? (
-                              buf[`read${parse}`](offset, byteLength) * scale
-                            ).toFixed(precision)
-                          : buf[`read${parse}`](offset, byteLength) * scale,
+                        [channel_name]:
+                          precision !== null
+                            ? (
+                                buf[`read${parse}`](offset, byteLength) * scale
+                              ).toFixed(precision)
+                            : buf[`read${parse}`](offset, byteLength) * scale,
                       });
                     })
                     .catch((err) => {
