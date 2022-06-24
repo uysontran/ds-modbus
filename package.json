@@ -36,6 +36,6 @@
     "express": "^4.17.3",
     "jsmodbus": "^4.0.6",
     "p-queue": "^5.0.0",
-    "serialport": "^10.3.0"
+    "serialport": "^10.4.0"
   }
 }
