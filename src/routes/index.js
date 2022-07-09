@@ -1,5 +1,6 @@
-const readModbus = require("../controller/readModbus.controller");
-function router(app) {
-  app.use("/action/:protocol", readModbus);
-}
-module.exports = router;
+module.exports = function (app) {
+  //RTU
+  const { RTU } = require("../controller");
+  app.get("/RTU/SerialPort", RTU.getSerialPort);
+  app.get("/RTU", RTU.get);
+};

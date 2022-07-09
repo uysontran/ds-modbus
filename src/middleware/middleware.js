@@ -1,6 +1,5 @@
-const express = require("express");
-
 module.exports = function (app) {
+  const express = require("express");
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
   app.use(
