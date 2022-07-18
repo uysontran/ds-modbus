@@ -1,5 +1,6 @@
 module.exports.get = async function (req, res) {
   const {
+    id,
     path = undefined,
     baudRate = undefined,
     slaveID = undefined,

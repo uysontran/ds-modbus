@@ -7,8 +7,10 @@
   "scripts": {
     "start": "nodemon --inspect index.js",
     "setup_armhf": "export AR=\"arm-linux-gnueabihf-ar\" && export CC=\"arm-linux-gnueabihf-gcc\" && export CXX=\"arm-linux-gnueabihf-g++\" &&export LINK=\"arm-linux-gnueabihf-g++\"&&npm install --build-from-source --target_arch=arm --omit=dev",
-    "setup": "npm install --omit=dev`",
-    "build": "export AR=\"arm-linux-gnueabihf-ar\" && export CC=\"arm-linux-gnueabihf-gcc\" && export CXX=\"arm-linux-gnueabihf-g++\" &&export LINK=\"arm-linux-gnueabihf-g++\"&& pkg . -b --no-bytecode --public-packages \"*\" --public"
+    "setup": "npm install --omit=dev",
+    "compile": "pkg . --no-bytecode --public-packages \"*\" --public",
+    "build": "DOCKER_BUILDKIT=1 docker build --output dist .",
+    "clean": "rm -r ./dist | rm -r ./node_modules"
   },
   "repository": {
     "type": "git",

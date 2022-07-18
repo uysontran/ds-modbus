@@ -42,11 +42,11 @@ class Modbus {
           );
           const resultAsBuffer = resultAsObject.response._body._valuesAsBuffer;
           const resultAsArray = ConsecutivesGroup.map((channel) => {
-            const { addr, dataType, ...others } = channel;
+            const { addr, dataType, fc, ...others } = channel;
             const data = resultAsBuffer[`read${channel.dataType}`](
               (channel.addr - firstReg.addr) * 2
             );
-            return { ...others, data };
+            return { ...others, value: data };
           }).flat();
           resolve(resultAsArray);
         } catch (err) {
