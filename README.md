@@ -8,14 +8,24 @@ ds-modbus stand for device service modbus. This service provide RESTfuls API to 
 - Tranform data from raw buffer to its data type.
 - ModbusRTU:
 
-  - List serialport.
-  - modbus commands will exec faster by holding serial port opening. You can set holding time by setting env.
+  - List serial ports.
+  - Modbus commands will exec faster by holding serial port opening. You can set holding time by setting env.
+  - Queue commands
 
 - ModbusTCP:
 
+  - Cache TCP connection
+
 ## Supported function:
 
-- Read holding register (fc = 03)
+- [x] Read Coil (fc = 01)
+- [x] Read Discrete Input (fc = 02)
+- [ ] Read Holding Registers (fc = 03)
+- [x] Read Input Registers (fc = 04)
+- [x] Write Single Coil (fc = 05)
+- [x] Write Single Holding Register (fc = 06)
+- [x] Write Multiple Coils (fc = 15)
+- [x] Write Multiple Holding Registers (fc = 16)
 
 # Requirement:
 
@@ -26,6 +36,17 @@ ds-modbus stand for device service modbus. This service provide RESTfuls API to 
 - [not sure] gcc, g++, make
 
 ## Production enviroment
+
+### For index.js
+
+Same as development enviroment
+
+### For executable file
+
+- glibc 2.29 or above
+- glibcxx 3.4.26 or above
+
+See [deloying guide](docs/deloying.md) for more information
 
 # Installation Guide
 
@@ -54,19 +75,25 @@ npm run build
 ### Output:
 
 Output file will be placed at dist folder.
-
 There are two file will be exported:
 
 - executable file: You can run this file without installling node js
-- .tar.gz: the compressed project folder, you can run app after uncompressed this file with `node index.js` command in case of executable can not run. However, nodejs is required.
+- .tar.gz: the compressed project folder, you can run app after uncompresse this file with `node index.js` command in case of executable can not run. However, nodejs is required.
 
 ### OS list:
 
 - linux
+- win
+- macos
+- alpine
+- linuxstatic
 
 ### Target list:
 
-- armv7
+- x64
+- arm64
+- armv7 (best effort version)
+- armv6 (not recommended)
 
 # APIs:
 
@@ -126,16 +153,17 @@ There are two file will be exported:
   POST /RTU
   ```
 
-  | Property  | Description           |
+- body:
+  | Property | Description |
   | :-------- | :-------------------- |
-  | slaveID   |                       |
-  | path      | path to serial port   |
-  | baudRate  |                       |
-  | parity    | `none`, `even`, `odd` |
-  | stopBits  | `8`                   |
-  | startBits | `1`, `1.5`, `2`       |
-  | channels  | array of channels     |
-  | other     | other property        |
+  | slaveID | |
+  | path | path to serial port |
+  | baudRate | |
+  | parity | `none`, `even`, `odd` |
+  | stopBits | `8` |
+  | startBits | `1`, `1.5`, `2` |
+  | channels | array of channels |
+  | other | other properties |
 
   **Channels:**
 
@@ -146,6 +174,47 @@ There are two file will be exported:
       addr: number,
       dataType: string,
       fc: string, // `03`
+      ...others: object
     },
   ];
   ```
+
+### Responce:
+
+| Status | Body                                                                                                                                         | Description |
+| :----- | :------------------------------------------------------------------------------------------------------------------------------------------- | :---------- |
+| `200`  | `Modbus Data`                                                                                                                                |             |
+| `408`  | Device has disconnected                                                                                                                      |             |
+| `400`  | `Modbus Error `                                                                                                                              |             |
+| `503`  | "Permission denied,run sudo chmod 666 `path`. <br /> For more detail, please search about how to <br /> gain serialport permission on linux" |             |
+
+**Modbus Data:**
+
+```javascript
+  {
+    name: string //device name
+    ...other_properties : object // other properties in request
+    channels : [
+      {
+        name: string //channel name
+        data: number/string
+        ...other: object //others in request
+      }
+    ]
+  }
+```
+
+**Modbus Error**
+
+| Body                                          | Code |
+| :-------------------------------------------- | :--- |
+| Illegal Function                              | 1    |
+| Illegal Data Address                          | 2    |
+| Illegal Data Value                            | 3    |
+| Slave Device Failure                          | 4    |
+| Acknowledge                                   | 5    |
+| Slave Device Busy                             | 6    |
+| Negative Acknowledge                          | 7    |
+| Memory Parity Error                           | 8    |
+| Gateway Path Unavailable                      | 10   |
+| Gateway Target Device Failed <br/> to Respond | 11   |
