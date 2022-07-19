@@ -18,14 +18,14 @@ ds-modbus stand for device service modbus. This service provide RESTfuls API to 
 
 ## Supported function:
 
-- [x] Read Coil (fc = 01)
-- [x] Read Discrete Input (fc = 02)
-- [ ] Read Holding Registers (fc = 03)
-- [x] Read Input Registers (fc = 04)
-- [x] Write Single Coil (fc = 05)
-- [x] Write Single Holding Register (fc = 06)
-- [x] Write Multiple Coils (fc = 15)
-- [x] Write Multiple Holding Registers (fc = 16)
+- [] Read Coil (fc = 01)
+- [] Read Discrete Input (fc = 02)
+- [x] Read Holding Registers (fc = 03)
+- [] Read Input Registers (fc = 04)
+- [] Write Single Coil (fc = 05)
+- [] Write Single Holding Register (fc = 06)
+- [] Write Multiple Coils (fc = 15)
+- [] Write Multiple Holding Registers (fc = 16)
 
 # Requirement:
 
