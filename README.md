@@ -1,3 +1,14 @@
+## Table of Contents
+
+- [Introduction](#introduction)
+  - [Feature](#feature)
+  - [Supported function](#supported-function)
+- [Requirement](#requirement)
+- [Installation Guide](#installation-guide)
+- [APIs](#apis)
+
+---
+
 # Introduction
 
 ds-modbus stand for device service modbus. This service provide RESTfuls API to communicate with modbus devices.
@@ -33,7 +44,6 @@ ds-modbus stand for device service modbus. This service provide RESTfuls API to 
 
 - node v14 lts or above
 - [optional] docker for build executable file
-- [not sure] gcc, g++, make
 
 ## Production enviroment
 
@@ -45,8 +55,6 @@ Same as development enviroment
 
 - glibc 2.29 or above
 - glibcxx 3.4.26 or above
-
-See [deloying guide](docs/deloying.md) for more information
 
 # Installation Guide
 
@@ -94,6 +102,12 @@ There are two file will be exported:
 - arm64
 - armv7 (best effort version)
 - armv6 (not recommended)
+
+# Deploying Guide
+
+See list below
+
+- [Moxa Deploying Guide](docs/deploying/moxa.md)
 
 # APIs:
 
@@ -204,7 +218,7 @@ There are two file will be exported:
   }
 ```
 
-**Modbus Error**
+**Modbus Error:**
 
 | Body                                          | Code |
 | :-------------------------------------------- | :--- |

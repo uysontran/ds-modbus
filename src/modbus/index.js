@@ -9,7 +9,7 @@ class Modbus {
    * @constructor {"RTU"|"TCP"} type
    */
   constructor(type) {
-    const modbusRTU = require("./modbusRTU");
+    const modbusRTU = require("./RTU/modbusRTU");
     const modbusTCP = require("./modbusTCP");
     if (type === "RTU") this.#client = new modbusRTU();
   }

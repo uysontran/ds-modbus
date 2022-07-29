@@ -47,7 +47,7 @@ class serialport {
 }
 /*
 Provide some basic modbus interface function and manage serialports connection
-Each serial port have it own queue to avoid conlict
+Each serial port have it own queue to avoid conflict
 */
 class modbusRTU {
   /*

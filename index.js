@@ -1,7 +1,8 @@
 const app = require("express")();
-(function () {
+(async function () {
   require("./src/middleware/middleware.js")(app);
   require("./src/routes/index.js")(app);
+  await require("./src/modbus").ModbusRTU.SerialPort();
   app.use("/status", (req, res) => {
     return res.sendStatus(200);
   });

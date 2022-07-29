@@ -1,3 +1,5 @@
+# Setup gateway
+
 ## Connect to Moxa gateway
 
 **On your linux computer**
@@ -60,6 +62,8 @@
    | broadcast | last address of network. | `192.168.1.255` |
    | gateway   | default gateway ip.      | `192.168.1.1`   |
 
+   Note: If you don't know what to do with these things, just follow the example
+
 3. Restart Network Service
    ```bash
    sudo systemctl restart networking
@@ -90,41 +94,33 @@
    Warning: `mx-uart-ctl` will available to run as a non-root user
 2. Create startup script
    ```bash
-   sudo nano /usr/local/binstartup.sh
+   echo '#!/bin/sh' | sudo tee -a /usr/local/bin/startup.sh
+   echo 'mx-uart-ctl -p 0 -m 1' | sudo tee -a /usr/local/bin/startup.sh
    ```
-3. Copy these script
-   ```bash
-   #!/bin/sh
-   mx-uart-ctl -p 0 -m 1
-   ```
-4. Allow startup.sh run directly from terminal
+3. Allow startup.sh run directly from terminal
    ```bash
    sudo chmod +x /usr/local/bin/startup.sh
    ```
-5. Create gateway service
+4. Create gateway service
+
    ```bash
-   sudo nano /lib/systemd/system/gateway.service
-   ```
-6. Init gatwate.service
-
-   ```
-    [Unit]
-    Description=Enable RS485 2-W Mode
-    After=uc2100-base-system.service
-
-    [Service]
-    Type=oneshot
-    ExecStart=/bin/bash startup.sh
-
-    [Install]
-    WantedBy=multi-user.target
+    echo '[Unit]' | sudo tee -a /lib/systemd/system/gateway.service
+    echo 'Description=Enable RS485 2-W Mode' | sudo tee -a /lib/systemd/system/gateway.service
+    echo 'After=uc2100-base-system.service' | sudo tee -a /lib/systemd/system/gateway.service
+    echo | sudo tee -a /lib/systemd/system/gateway.service
+    echo '[Service]' | sudo tee -a /lib/systemd/system/gateway.service
+    echo 'Type=oneshot' | sudo tee -a /lib/systemd/system/gateway.service
+    echo 'ExecStart=/bin/bash startup.sh' | sudo tee -a /lib/systemd/system/gateway.service
+    echo | sudo tee -a /lib/systemd/system/gateway.service
+    echo '[Install]' | sudo tee -a /lib/systemd/system/gateway.service
+    echo 'WantedBy=multi-user.target' | sudo tee -a /lib/systemd/system/gateway.service
    ```
 
-7. Enable service on boot
+5. Enable service on boot
    ```bash
    sudo systemctl enable gateway
    ```
-8. Reboot
+6. Reboot
    ```bash
    sudo reboot
    ```
@@ -160,3 +156,63 @@
    ```bash
    sudo apt update
    ```
+
+## Install screen
+
+```bash
+sudo apt install screen
+```
+
+# Deloying
+
+**From your computer**
+
+## Build project
+
+```bash
+npm run build
+```
+
+## Copy executable file to target
+
+```bash
+scp ./dist/modbus [target-username]@[target-ip]:[target-location]
+```
+
+## SSH and test
+
+**SSH and forwarding port to localhost**
+
+```bash
+ssh -L 33334:locaslhost:33334 [target-username]@[target-ip]
+```
+
+```
+cd [target-location]
+./modbus
+```
+
+**Use postman or curl or browser from your computer**
+
+1. Check application status
+
+   **_URL:_**
+
+   ```http
+   GET http://localhost:33334/status/
+   ```
+
+2. Check serial port
+   **_URL:_**
+
+   ```http
+   GET http://localhost:33334/RTU/Serialport
+   ```
+
+## Add appliaction to startup script
+
+```bash
+echo 'screen -d -m -S core ~/core' | sudo tee -a /usr/local/bin/startup.sh
+echo 'screen -d -m -S modbus ~/modbus' | sudo tee -a /usr/local/bin/startup.sh
+echo 'screen -d -m -S mqtt ~/mqtt' | sudo tee -a /usr/local/bin/startup.sh
+```
