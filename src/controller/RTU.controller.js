@@ -41,6 +41,7 @@ module.exports.get = async function (req, res) {
     res.send({ ...others, channels: data });
   } catch (err) {
     const { code = 400, message = "" } = err;
+    console.err(err);
     res.status(code).send(message);
   }
 };

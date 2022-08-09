@@ -137,7 +137,7 @@
    sudo nano /etc/apt/sources.list
    ```
 
-   Replace all `stretct` to `bullseye`
+   Replace all `stretch` to `bullseye`
 
 3. Update and install libc6
    ```bash
@@ -151,17 +151,11 @@
    sudo nano /etc/apt/sources.list
    ```
 
-   Replace all `bullseye` to `stretct`
+   Replace all `bullseye` to `stretch`
 
    ```bash
    sudo apt update
    ```
-
-## Install screen
-
-```bash
-sudo apt install screen
-```
 
 # Deloying
 
@@ -212,7 +206,40 @@ cd [target-location]
 ## Add appliaction to startup script
 
 ```bash
-echo 'screen -d -m -S core ~/core' | sudo tee -a /usr/local/bin/startup.sh
-echo 'screen -d -m -S modbus ~/modbus' | sudo tee -a /usr/local/bin/startup.sh
-echo 'screen -d -m -S mqtt ~/mqtt' | sudo tee -a /usr/local/bin/startup.sh
+    echo '[Unit]' | sudo tee -a /lib/systemd/system/core.service
+    echo 'Description=Core Service' | sudo tee -a /lib/systemd/system/core.service
+    echo 'After=uc2100-base-system.service' | sudo tee -a /lib/systemd/core.service
+    echo | sudo tee -a /lib/systemd/system/core.service
+    echo '[Service]' | sudo tee -a /lib/systemd/system/core.service
+    echo 'Type=simple' | sudo tee -a /lib/systemd/system/core.service
+    echo 'ExecStart=/home/moxa/core' | sudo tee -a /lib/systemd/system/core.service
+    echo | sudo tee -a /lib/systemd/system/core.service
+    echo '[Install]' | sudo tee -a /lib/systemd/system/core.service
+    echo 'WantedBy=multi-user.target' | sudo tee -a /lib/systemd/system/core.service
+```
+
+```bash
+    echo '[Unit]' | sudo tee -a /lib/systemd/system/mqtt.service
+    echo 'Description=Up Service MQTT' | sudo tee -a /lib/systemd/system/mqtt.service
+    echo 'After=uc2100-base-system.service' | sudo tee -a /lib/systemd/mqtt.service
+    echo | sudo tee -a /lib/systemd/system/mqtt.service
+    echo '[Service]' | sudo tee -a /lib/systemd/system/mqtt.service
+    echo 'Type=simple' | sudo tee -a /lib/systemd/system/mqtt.service
+    echo 'ExecStart=/home/moxa/mqtt' | sudo tee -a /lib/systemd/system/mqtt.service
+    echo | sudo tee -a /lib/systemd/system/mqtt.service
+    echo '[Install]' | sudo tee -a /lib/systemd/system/mqtt.service
+    echo 'WantedBy=multi-user.target' | sudo tee -a /lib/systemd/system/mqtt.service
+```
+
+```bash
+    echo '[Unit]' | sudo tee -a /lib/systemd/system/modbus.service
+    echo 'Description=Down Service MODBUS' | sudo tee -a /lib/systemd/system/modbus.service
+    echo 'After=uc2100-base-system.service' | sudo tee -a /lib/systemd/modbus.service
+    echo | sudo tee -a /lib/systemd/system/modbus.service
+    echo '[Service]' | sudo tee -a /lib/systemd/system/modbus.service
+    echo 'Type=simple' | sudo tee -a /lib/systemd/system/modbus.service
+    echo 'ExecStart=/home/moxa/modbus' | sudo tee -a /lib/systemd/system/modbus.service
+    echo | sudo tee -a /lib/systemd/system/modbus.service
+    echo '[Install]' | sudo tee -a /lib/systemd/system/modbus.service
+    echo 'WantedBy=multi-user.target' | sudo tee -a /lib/systemd/system/modbus.service
 ```
